@@ -8,8 +8,13 @@ double sigmoide(double x) {
   return 1.f/(1+std::exp(-x));
 }
 
+double d_sigmoide(double x) {
+  return sigmoide(x)*(1-sigmoide(x));
+}
+
 Neurone::Neurone() {
   valeur = 0;
+  d_valeur = 0;
   erreur = 0;
 }
 
@@ -36,6 +41,7 @@ void Neurone::eval() {
     somme += inputs[i]->getValue()*poids[i];
   }
   valeur = sigmoide(somme);
+  d_valeur = d_sigmoide(somme);
   //valeur = somme<=0?0:1;
   
   std::cout << "Resultat = " << valeur << std::endl;
@@ -59,8 +65,15 @@ void Neurone::updateErreur() {
   }
 }
 
+void Neurone::updatePoids() {
+  double learning_rate = 0.1;
+  for (int i = 0; i < inputs.size(); i++) {
+    poids[i] += erreur*d_valeur*inputs[i]->getValue();
+  }
+}
+
 void Neurone::train(float target) {
-  float error = target - valeur;
+  double error = target - valeur;
   for (int i = 0; i < poids.size(); i++) {
     poids[i] += error * inputs[i]->getValue();
   }
@@ -87,29 +100,40 @@ int main() {
 
   Neurone * out = new Neurone(c2);
 
-  n1->setValue(1);
-  n2->setValue(1);
-  n3->setValue(1);
+  for (int i = 0; i < 50000; i++) {
+    int a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
+    if (c == 1) {
+      result = 0;
+    }
+    
+    n1->setValue(a);
+    n2->setValue(b);
+    n3->setValue(c);
 
-  n4->eval();
-  n5->eval();
+    n4->eval();
+    n5->eval();
 
-  out->eval();
+    out->eval();
 
-  out->setErreur(1-out->getValue());
-  /*
-    Condition nécessaire avant de rétropropager l'erreur :
-    Les erreurs de couches précédentes doivent être réinitialiser à 0
-   */
-  n4->setErreur(0);
-  n5->setErreur(0);
-  out->updateErreur(); //Rétropropagation de l'erreur à la couche 2
+    out->setErreur(result-out->getValue());
+    /*
+      Condition nécessaire avant de rétropropager l'erreur :
+      Les erreurs de couches précédentes doivent être réinitialiser à 0
+    */
+    n4->setErreur(0);
+    n5->setErreur(0);
+    out->updateErreur(); //Rétropropagation de l'erreur à la couche 2
 
-  n1->setErreur(0);
-  n2->setErreur(0);
-  n3->setErreur(0);
-  n4->updateErreur();
-  n5->updateErreur();
+    n1->setErreur(0);
+    n2->setErreur(0);
+    n3->setErreur(0);
+    n4->updateErreur();
+    n5->updateErreur();
+
+    out->updatePoids();
+    n4->updatePoids();
+    n5->updatePoids();
+  }
   
   return 0;
 }
