@@ -1,8 +1,8 @@
 #include "neurone.hpp"
 #include <iostream>
+#include <math.h>
 #include <stdlib.h> 
 #include <time.h>
-#include <math.h>
 
 double sigmoide(double x) {
   return 1.f/(1+std::exp(-x));
@@ -23,7 +23,16 @@ Neurone::Neurone(std::vector<Neurone*> n) {
   for (int i = 0; i < n.size(); i++) {
     double val = ((rand()%201-100.f)/100.f);
     poids.push_back(val);
-    std::cout << poids[i] << std::endl;
+    //std::cout << poids[i] << std::endl;
+  }
+}
+
+void Neurone::setInputs(std::vector<Neurone*> n) {
+  inputs = n;
+  for (int i = 0; i < n.size(); i++) {
+    double val = ((rand()%201-100.f)/100.f);
+    poids.push_back(val);
+    //std::cout << poids[i] << std::endl;
   }
 }
 
@@ -40,11 +49,12 @@ void Neurone::eval() {
   for (int i = 0; i < inputs.size(); i++) {
     somme += inputs[i]->getValue()*poids[i];
   }
+
   valeur = sigmoide(somme);
   d_valeur = d_sigmoide(somme);
   //valeur = somme<=0?0:1;
   
-  std::cout << "Resultat = " << valeur << std::endl;
+  //std::cout << "Resultat = " << valeur << std::endl;
 }
 
 void Neurone::setErreur(double e) {
@@ -59,9 +69,9 @@ void Neurone::updateErreur() {
   if (erreur != 0) {
     for (int i = 0; i < inputs.size(); i++) { //Pour chaque neurone de inputs
       inputs[i]->setErreur(inputs[i]->getErreur() + (erreur * poids[i]));
-      std::cout << "E : " << inputs[i]->getErreur() << std::endl;
+      //std::cout << "E : " << inputs[i]->getErreur() << std::endl;
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
   }
 }
 
@@ -72,15 +82,7 @@ void Neurone::updatePoids() {
   }
 }
 
-void Neurone::train(float target) {
-  double error = target - valeur;
-  for (int i = 0; i < poids.size(); i++) {
-    poids[i] += error * inputs[i]->getValue();
-  }
-  std::cout << "Erreur = " << error << std::endl;
-  std::cout << poids[0] << " " << poids[1] << std::endl;
-}
-
+/*
 int main() {
   srand (time(NULL));
   
@@ -100,8 +102,8 @@ int main() {
 
   Neurone * out = new Neurone(c2);
 
-  for (int i = 0; i < 50000; i++) {
-    int a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
+  for (int i = 0; i < 10000; i++) {
+    int a = rand()%2,b =   rand()%2, c = rand()%2, result = 1;
     if (c == 1) {
       result = 0;
     }
@@ -116,10 +118,10 @@ int main() {
     out->eval();
 
     out->setErreur(result-out->getValue());
-    /*
-      Condition nécessaire avant de rétropropager l'erreur :
-      Les erreurs de couches précédentes doivent être réinitialiser à 0
-    */
+    
+    //  Condition nécessaire avant de rétropropager l'erreur :
+    //  Les erreurs de couches précédentes doivent être réinitialiser à 0
+
     n4->setErreur(0);
     n5->setErreur(0);
     out->updateErreur(); //Rétropropagation de l'erreur à la couche 2
@@ -133,7 +135,10 @@ int main() {
     out->updatePoids();
     n4->updatePoids();
     n5->updatePoids();
+
+    std::cout << "Erreur " << i << " : " << out->getErreur() << std::endl;
   }
   
   return 0;
 }
+*/

@@ -13,6 +13,7 @@ private:
 public:
   Neurone(); //Initialisation du neurone sans inputs ni poids
   Neurone(std::vector<Neurone*>); //Initialisation du neurone avec les inputs et coeficients random (-1 à 1 ou 0 à 1 ?)
+  void setInputs(std::vector<Neurone*>); //Actualise inputs et créer des coefficients random
   void setValue(double);
   double getValue();
   void eval(); //Calcul la valeur d'entrée et la stocke
@@ -20,7 +21,6 @@ public:
   double getErreur();
   void updateErreur(); //Met à jour les erreurs des neurones précédents en fonction de "erreur"
   void updatePoids(); //Met à jour les poids en fonction des erreurs
-  void train(float target); //Corrige l'erreur en fonction de target
 };
 
 #endif
