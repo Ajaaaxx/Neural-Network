@@ -1,8 +1,5 @@
 #include "neurone.hpp"
-#include <iostream>
 #include <math.h>
-#include <stdlib.h> 
-#include <time.h>
 
 double sigmoide(double x) {
   return 1.f/(1+std::exp(-x));
@@ -81,64 +78,3 @@ void Neurone::updatePoids() {
     poids[i] += erreur*d_valeur*inputs[i]->getValue();
   }
 }
-
-/*
-int main() {
-  srand (time(NULL));
-  
-  Neurone * n1 = new Neurone();
-  Neurone * n2 = new Neurone();
-  Neurone * n3 = new Neurone();
-  std::vector<Neurone*> c1;
-  c1.push_back(n1);
-  c1.push_back(n2);
-  c1.push_back(n3);
-
-  Neurone * n4 = new Neurone(c1);
-  Neurone * n5 = new Neurone(c1);
-  std::vector<Neurone*> c2;
-  c2.push_back(n4);
-  c2.push_back(n5);
-
-  Neurone * out = new Neurone(c2);
-
-  for (int i = 0; i < 10000; i++) {
-    int a = rand()%2,b =   rand()%2, c = rand()%2, result = 1;
-    if (c == 1) {
-      result = 0;
-    }
-    
-    n1->setValue(a);
-    n2->setValue(b);
-    n3->setValue(c);
-
-    n4->eval();
-    n5->eval();
-
-    out->eval();
-
-    out->setErreur(result-out->getValue());
-    
-    //  Condition nécessaire avant de rétropropager l'erreur :
-    //  Les erreurs de couches précédentes doivent être réinitialiser à 0
-
-    n4->setErreur(0);
-    n5->setErreur(0);
-    out->updateErreur(); //Rétropropagation de l'erreur à la couche 2
-
-    n1->setErreur(0);
-    n2->setErreur(0);
-    n3->setErreur(0);
-    n4->updateErreur();
-    n5->updateErreur();
-
-    out->updatePoids();
-    n4->updatePoids();
-    n5->updatePoids();
-
-    std::cout << "Erreur " << i << " : " << out->getErreur() << std::endl;
-  }
-  
-  return 0;
-}
-*/
