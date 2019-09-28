@@ -10,6 +10,7 @@ double sigmoide(double x) {
 
 Neurone::Neurone() {
   valeur = 0;
+  erreur = 0;
 }
 
 Neurone::Neurone(std::vector<Neurone*> n) {
@@ -34,10 +35,28 @@ void Neurone::eval() {
   for (int i = 0; i < inputs.size(); i++) {
     somme += inputs[i]->getValue()*poids[i];
   }
-  //valeur = sigmoide(somme);
-  valeur = somme<=0?0:1;
+  valeur = sigmoide(somme);
+  //valeur = somme<=0?0:1;
   
   std::cout << "Resultat = " << valeur << std::endl;
+}
+
+void Neurone::setErreur(double e) {
+  erreur = e;
+}
+
+double Neurone::getErreur() {
+  return erreur;
+}
+
+void Neurone::updateErreur() {
+  if (erreur != 0) {
+    for (int i = 0; i < inputs.size(); i++) { //Pour chaque neurone de inputs
+      inputs[i]->setErreur(inputs[i]->getErreur() + (erreur * poids[i]));
+      std::cout << "E : " << inputs[i]->getErreur() << std::endl;
+    }
+    std::cout << std::endl;
+  }
 }
 
 void Neurone::train(float target) {
@@ -54,28 +73,43 @@ int main() {
   
   Neurone * n1 = new Neurone();
   Neurone * n2 = new Neurone();
-  
+  Neurone * n3 = new Neurone();
   std::vector<Neurone*> c1;
   c1.push_back(n1);
   c1.push_back(n2);
-  
-  Neurone * out = new Neurone(c1);
+  c1.push_back(n3);
 
-  for (int i = 0; i < 1000; i++) {
-    int a = rand()%2;
-    int b = rand()%2;
-    std::cout << a << " " << b << std::endl;
-    int target = 0;
-    if (a == 1) {
-      target = 1;
-    }
-    n1->setValue(a);
-    n2->setValue(b);
-    std::cout << "Out : ";
-    out->eval();
-    out->train(target);
-    std::cout << std::endl;
-  }
+  Neurone * n4 = new Neurone(c1);
+  Neurone * n5 = new Neurone(c1);
+  std::vector<Neurone*> c2;
+  c2.push_back(n4);
+  c2.push_back(n5);
+
+  Neurone * out = new Neurone(c2);
+
+  n1->setValue(1);
+  n2->setValue(1);
+  n3->setValue(1);
+
+  n4->eval();
+  n5->eval();
+
+  out->eval();
+
+  out->setErreur(1-out->getValue());
+  /*
+    Condition nécessaire avant de rétropropager l'erreur :
+    Les erreurs de couches précédentes doivent être réinitialiser à 0
+   */
+  n4->setErreur(0);
+  n5->setErreur(0);
+  out->updateErreur(); //Rétropropagation de l'erreur à la couche 2
+
+  n1->setErreur(0);
+  n2->setErreur(0);
+  n3->setErreur(0);
+  n4->updateErreur();
+  n5->updateErreur();
   
   return 0;
 }

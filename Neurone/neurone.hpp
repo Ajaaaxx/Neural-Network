@@ -6,6 +6,7 @@
 class Neurone {
 private:
   double valeur; //Valeur du neurone après calcul
+  double erreur;
   std::vector<Neurone*> inputs; //Tableau de pointeur de neurones
   std::vector<double> poids; //Tableau des poids
 public:
@@ -14,6 +15,9 @@ public:
   void setValue(double);
   double getValue();
   void eval(); //Calcul la valeur d'entrée et la stocke
+  void setErreur(double);
+  double getErreur();
+  void updateErreur(); //Met à jour les erreurs des neurones précédents en fonction de "erreur"
   void train(float target); //Corrige l'erreur en fonction de target
 };
 
