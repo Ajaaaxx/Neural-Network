@@ -1,11 +1,11 @@
 #include <iostream>
-#include "Couche/couche.hpp"
+#include "Network/network.hpp"
 #include <stdlib.h> 
 #include <time.h>
 
 using namespace std;
 
-int main() {
+int main() /*{
   srand (time(NULL));
  
   Couche * c1 = new Couche(3);
@@ -45,7 +45,7 @@ int main() {
   }
   
   return 0;
-}
+}*/
 
 /* Version précédente
 int main() {
@@ -107,3 +107,13 @@ int main() {
   return 0;
 }
 */
+{
+  Network* n = new Network();
+  Couche* c1 = new Couche(3);
+  Couche* c2 = new Couche(3);
+  Couche* c3 = new Couche(3);
+
+  n->add(c1);
+  n->add(c2);
+  n->add(c3);
+}
