@@ -1,12 +1,19 @@
-#include "Couche/couche.hpp"
+#include "Network/network.hpp"
 #include <stdlib.h> 
 #include <time.h>
 #include <iostream>
 
+using namespace std;
 
 int main() {
   srand (time(NULL));
 
+  Network * reseau = new Network();
+  reseau->add(5);
+  reseau->add(5);
+  reseau->add(5);
+  cout << reseau->getJson() << endl;
+  /*
   Couche * c1 = new Couche(3);
   Couche * c2 = new Couche(2);
   Couche * c3 = new Couche(1);
@@ -42,6 +49,7 @@ int main() {
 
     std::cout << "Erreur " << i << " : " << c3->getNeurones()[0]->getErreur() << std::endl;
   }
+  */
 
   return 0;
 }

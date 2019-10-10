@@ -1,0 +1,10 @@
+#include "neuron.hpp"
+#include <iostream>
+
+using namespace std;
+
+int main {} {
+  Neuron * n1 = new Neuron();
+  cout << n1->getJson << endl;
+  return 0;
+}

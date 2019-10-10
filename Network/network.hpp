@@ -1,17 +1,17 @@
 #ifndef _NETWORK
 #define _NETWORK
 
-#include "../Couche/couche.hpp"
+#include "../Layer/layer.hpp"
 
 class Network{
-    private:
-        Couche* input;
-        std::vector<Couche*> couches;
-        Couche* output;
+private:
+  std::vector<Layer*> layers;
 
-    public:
-        Network();
-        void add(Couche* c);
+public:
+  Network();
+  void add(Layer* c);
+  void add(int n); //Ajout d'une couche de n neurones en fully connected
+  std::string getJson();
 };
 
 #endif

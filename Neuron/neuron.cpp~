@@ -1,4 +1,4 @@
-#include "neurone.hpp"
+#include "neuron.hpp"
 #include <math.h>
 
 double sigmoide(double x) {
@@ -9,13 +9,13 @@ double d_sigmoide(double x) {
   return sigmoide(x)*(1-sigmoide(x));
 }
 
-Neurone::Neurone() {
+Neuron::Neuron() {
   valeur = 0;
   d_valeur = 0;
   erreur = 0;
 }
 
-Neurone::Neurone(std::vector<Neurone*> n) {
+Neuron::Neuron(std::vector<Neuron*> n) {
   inputs = n;
   for (int i = 0; i < n.size(); i++) {
     double val = ((rand()%201-100.f)/100.f);
@@ -24,7 +24,7 @@ Neurone::Neurone(std::vector<Neurone*> n) {
   }
 }
 
-void Neurone::setInputs(std::vector<Neurone*> n) {
+void Neuron::setInputs(std::vector<Neuron*> n) {
   inputs = n;
   for (int i = 0; i < n.size(); i++) {
     double val = ((rand()%201-100.f)/100.f);
@@ -33,15 +33,15 @@ void Neurone::setInputs(std::vector<Neurone*> n) {
   }
 }
 
-void Neurone::setValue(double v) {
+void Neuron::setValue(double v) {
   valeur = v;
 }
 
-double Neurone::getValue() {
+double Neuron::getValue() {
   return valeur;
 }
 
-void Neurone::eval() {
+void Neuron::eval() {
   double somme = 0;
   for (int i = 0; i < inputs.size(); i++) {
     somme += inputs[i]->getValue()*poids[i];
@@ -54,15 +54,15 @@ void Neurone::eval() {
   //std::cout << "Resultat = " << valeur << std::endl;
 }
 
-void Neurone::setErreur(double e) {
+void Neuron::setErreur(double e) {
   erreur = e;
 }
 
-double Neurone::getErreur() {
+double Neuron::getErreur() {
   return erreur;
 }
 
-void Neurone::updateErreur() {
+void Neuron::updateErreur() {
   if (erreur != 0) {
     for (int i = 0; i < inputs.size(); i++) { //Pour chaque neurone de inputs
       inputs[i]->setErreur(inputs[i]->getErreur() + (erreur * poids[i]));
@@ -72,9 +72,21 @@ void Neurone::updateErreur() {
   }
 }
 
-void Neurone::updatePoids() {
+void Neuron::updatePoids() {
   double learning_rate = 0.5;
   for (int i = 0; i < inputs.size(); i++) {
     poids[i] += learning_rate*erreur*d_valeur*inputs[i]->getValue();
   }
+}
+
+std::string Neuron::getJson() {
+  //On initialise le json avec l'adresse et la fonction d'activation
+  std::string json = "{\"f_activation\" : \"sigmoide\", \"inputs\" : {";
+  for (int i = 0; i < inputs.size(); i++) {
+    json += "\"Neuron" + std::to_string(i) + "\" : " + "\"" + std::to_string(poids[i]) + "\",";
+  }
+  json.pop_back(); //Pour enlever la , en trop
+  json += "}}";
+  
+  return json;
 }
