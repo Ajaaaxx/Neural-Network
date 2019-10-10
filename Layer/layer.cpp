@@ -1,4 +1,9 @@
 #include "layer.hpp"
+#include "../json.hpp"
+#include <iostream>
+
+using namespace std;
+using json = nlohmann::json;
 
 Layer::Layer() {
 
@@ -17,6 +22,19 @@ Layer::Layer(int i) {
   for (int x = 0; x < i; x++) {
     neurones.push_back(new Neuron());
   }
+}
+
+Layer::Layer(std::string jsonString, Layer * c) {
+  json j = json::parse(jsonString);
+  std::string n = "Neuron0";
+  for (int i = 0; i < c->getNeurons().size();i) {
+    std::cout << j[n] << std::endl;
+    neurones.push_back(new Neuron(j[n].dump(), c->getNeurons()));
+    n.pop_back();
+    n += std::to_string(++i);
+  }
+  if (jsonString == getJson())
+    cout << "Les deux couches sont égales" << endl;
 }
 
 void Layer::ajouterNeuron(Neuron * n) {

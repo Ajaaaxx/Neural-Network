@@ -12,5 +12,6 @@ int main () {
   c.push_back(n2);
   Neuron * n3 = new Neuron(c);
   cout << n3->getJson() << endl;
+  Neuron * test = new Neuron(n3->getJson(),c);
   return 0;
 }

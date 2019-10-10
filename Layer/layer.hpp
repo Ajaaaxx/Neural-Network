@@ -2,6 +2,7 @@
 #define _LAYER
 
 #include "../Neuron/neuron.hpp"
+#include <string>
 
 class Layer {
 private:
@@ -11,6 +12,7 @@ public:
   Layer(); //Layer vide sans neurones ni biais
   Layer(std::vector<Neuron*>); //Layer initialisée avec les neurones
   Layer(std::vector<Neuron*>,Neuron *); //Layer initialisée avec les neurones et le biais
+  Layer(std::string json, Layer * c); //Init avec json et Couche précédente
   Layer(int); //Layer avec i neurones
   void ajouterNeuron(Neuron *);
   void ajouterBiais(Neuron *);

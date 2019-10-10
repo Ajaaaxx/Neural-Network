@@ -13,6 +13,9 @@ int main() {
   reseau->add(5);
   reseau->add(5);
   cout << reseau->getJson() << endl;
+
+  Network * test = new Network(reseau->getJson());
+  
   /*
   Couche * c1 = new Couche(3);
   Couche * c2 = new Couche(2);

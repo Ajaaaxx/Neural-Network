@@ -1,21 +1,25 @@
 #include "network.hpp"
-#include "../rapidjson/document.h"
 #include <iostream>
-#include <fstream>
+#include "../json.hpp"
 
-using namespace rapidjson;
 using namespace std;
+using json = nlohmann::json;
 
-Network::Network(string file){
-  fstream fs;
-  fs.open(file);
-  fs.seekg(0,fs.end);
-  int length = fs.tellg();
-  fs.seekg(0,fs.beg);
-  char* buffer = new char[length];
-  fs.read(buffer,length);
-  Document config;
-  config.Parse(buffer); 
+Network::Network(string jsonString){
+  json j = json::parse(jsonString);
+  std::string n = "Layer0";
+  for (int i = 0; i < j.size();i) {
+    if (i == 0) {
+      layers.push_back(new Layer(j[n].size()));
+    } else {
+      std::cout << j[n] << std::endl;
+      layers.push_back(new Layer(j[n].dump(), layers.back()));
+    }
+    n.pop_back();
+    n += std::to_string(++i);
+  }
+  if (jsonString == getJson())
+    cout << "Les deux réseaux sont égaux" << endl;
 }
 
 Network::Network(){

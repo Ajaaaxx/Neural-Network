@@ -1,5 +1,10 @@
 #include "neuron.hpp"
+#include "../json.hpp"
 #include <math.h>
+#include <iostream>
+
+using namespace std;
+using json = nlohmann::json;
 
 double sigmoide(double x) {
   return 1.f/(1+std::exp(-x));
@@ -18,11 +23,27 @@ Neuron::Neuron() {
 Neuron::Neuron(std::vector<Neuron*> n) {
   inputs = n;
   for (int i = 0; i < n.size(); i++) {
-    double val = ((rand()%201-100.f)/100.f);
+    double val;
+    do {
+      val = ((rand()%201-100.f)/1000.f);
+    } while (val == 0);
     poids.push_back(val);
     //std::cout << poids[i] << std::endl;
   }
 }
+
+Neuron::Neuron(std::string jsonString, vector<Neuron*> l) {
+  json j = json::parse(jsonString);
+  string n = "Neuron0";
+  for (int i = 0; i < l.size();i) {
+    cout << j["inputs"][n] << endl;
+    poids.push_back(j["inputs"][n]);
+    inputs.push_back(l[i]);
+    n.pop_back();
+    n += to_string(++i);
+  }
+}
+
 
 void Neuron::setInputs(std::vector<Neuron*> n) {
   inputs = n;
@@ -85,7 +106,7 @@ std::string Neuron::getJson() {
   if (!inputs.empty()) {
     json += "{\"f_activation\" : \"sigmoide\", \"inputs\" : {";
     for (int i = 0; i < inputs.size(); i++) {
-      json += "\"Neuron" + std::to_string(i) + "\" : " + "\"" + std::to_string(poids[i]) + "\",";
+      json += "\"Neuron" + std::to_string(i) + "\" : " +  std::to_string(poids[i]) + ",";
     }
     json.pop_back(); //Pour enlever la , en trop
     json += "}}";

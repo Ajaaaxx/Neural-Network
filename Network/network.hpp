@@ -8,7 +8,7 @@ private:
   std::vector<Layer*> layers;
 
 public:
-  Network(std::string file);
+  Network(std::string json);
   Network();
   void add(Layer* c);
   void add(int n); //Ajout d'une couche de n neurones en fully connected

@@ -14,6 +14,7 @@ private:
 public:
   Neuron(); //Initialisation du neurone sans inputs ni poids
   Neuron(std::vector<Neuron*>); //Initialisation du neurone avec les inputs et coeficients random (-1 à 1 ou 0 à 1 ?)
+  Neuron(std::string json, std::vector<Neuron*> l); //Initialisation du neurone via json (autres couches)
   void setInputs(std::vector<Neuron*>); //Actualise inputs et créer des coefficients random
   void setValue(double);
   double getValue();
