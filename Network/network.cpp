@@ -1,7 +1,25 @@
 #include "network.hpp"
+#include "../rapidjson/document.h"
+#include <iostream>
+#include <fstream>
+
+using namespace rapidjson;
+using namespace std;
+
+Network::Network(string file){
+  fstream fs;
+  fs.open(file);
+  fs.seekg(0,fs.end);
+  int length = fs.tellg();
+  fs.seekg(0,fs.beg);
+  char* buffer = new char[length];
+  fs.read(buffer,length);
+  Document config;
+  config.Parse(buffer); 
+}
 
 Network::Network(){
-  
+
 }
 
 void Network::add(Layer* c){
