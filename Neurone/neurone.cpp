@@ -73,8 +73,8 @@ void Neurone::updateErreur() {
 }
 
 void Neurone::updatePoids() {
-  double learning_rate = 0.1;
+  double learning_rate = 0.5;
   for (int i = 0; i < inputs.size(); i++) {
-    poids[i] += erreur*d_valeur*inputs[i]->getValue();
+    poids[i] += learning_rate*erreur*d_valeur*inputs[i]->getValue();
   }
 }
