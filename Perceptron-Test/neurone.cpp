@@ -34,8 +34,8 @@ void Neurone::eval() {
   for (int i = 0; i < inputs.size(); i++) {
     somme += inputs[i]->getValue()*poids[i];
   }
-  //valeur = sigmoide(somme);
-  valeur = somme<=0?0:1;
+  valeur = sigmoide(somme);
+  //valeur = somme<=0?0:1;
   
   std::cout << "Resultat = " << valeur << std::endl;
 }
@@ -61,7 +61,7 @@ int main() {
   
   Neurone * out = new Neurone(c1);
 
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < 100; i++) {
     int a = rand()%2;
     int b = rand()%2;
     std::cout << a << " " << b << std::endl;
@@ -69,6 +69,10 @@ int main() {
     if (a == 1) {
       target = 1;
     }
+
+  //  if (a==1 && b==1)
+//	    target = 2;
+
     n1->setValue(a);
     n2->setValue(b);
     std::cout << "Out : ";
