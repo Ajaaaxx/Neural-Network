@@ -7,52 +7,67 @@ using namespace std;
 
 int main() {
   srand (time(NULL));
-
-  Network * reseau = new Network();
-  reseau->add(5);
-  reseau->add(5);
-  reseau->add(5);
-  cout << reseau->getJson() << endl;
-
-  Network * test = new Network(reseau->getJson());
   
-  /*
-  Couche * c1 = new Couche(3);
-  Couche * c2 = new Couche(2);
-  Couche * c3 = new Couche(1);
-  c2->relier(c1);
-  c3->relier(c2);
-
+  Network * reseau = new Network();
+  reseau->add(3);
+  reseau->add(10);
+  reseau->add(10);
+  reseau->add(10);
+  reseau->add(10);
+  reseau->add(1);
+  
   for (int i = 0; i < 100000; i++) {
-    int a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
+    double a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
     if (c == 1) {
-      result = 0;
+      result = 0.5;
     }
-
-    c1->getNeurones()[0]->setValue(a);
-    c1->getNeurones()[1]->setValue(b);
-    c1->getNeurones()[2]->setValue(c);
-
-    c2->eval();
-    c3->eval();
-
-    c3->getNeurones()[0]->setErreur(result-c3->getNeurones()[0]->getValue());
-
-    //  Condition nécessaire avant de rétropropager l'erreur :
-    //  Les erreurs de couches précédentes doivent être réinitialiser à 0
-
-    c2->resetErreur();
-    c3->updateErreur(); //Rétropropagation de l'erreur à la couche 2
-
-    c1->resetErreur();
-    c2->updateErreur();
-
-    c3->updatePoids();
-    c2->updatePoids();
-
-    std::cout << "Erreur " << i << " : " << c3->getNeurones()[0]->getErreur() << std::endl;
+    vector<double> in,out;
+    in.push_back(a);
+    in.push_back(b);
+    in.push_back(c);
+    out.push_back(result);
+    reseau->train(in,out);
+    if (i%1000 == 0) {
+      std::cout << "Entrainement n°" << i << std::endl;
+    }
   }
-  */
+  double somme = 0;
+  for (int i = 0; i < 1000; i++) {
+    double a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
+    if (c == 1) {
+      result = 0.5;
+    }
+    vector<double> in,out;
+    in.push_back(a);
+    in.push_back(b);
+    in.push_back(c);
+    out.push_back(result);
+    somme += reseau->train(in,out);
+  }
+  cout << "Erreur = " << somme/1000 << endl;
+  reseau->save("test.json");
+  
+  
+  std::cout << "On save le réseau" << std::endl;
+  std::cout << "On load le réseau" << std::endl;
+  Network * test = new Network();
+  test->load("test.json");
 
+  somme = 0;
+  for (int i = 0; i < 10; i++) {
+    double a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
+    if (c == 1) {
+      result = 0.5;
+    }
+    vector<double> in,out;
+    in.push_back(a);
+    in.push_back(b);
+    in.push_back(c);
+    out.push_back(result);
+    somme += test->train(in,out);
+  }
+
+  cout << "Nouvelle Erreur = " << somme/10 << endl;
+  
   return 0;
 }

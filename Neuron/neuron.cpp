@@ -21,6 +21,10 @@ Neuron::Neuron() {
 }
 
 Neuron::Neuron(std::vector<Neuron*> n) {
+  valeur = 0;
+  d_valeur = 0;
+  erreur = 0;
+  
   inputs = n;
   for (int i = 0; i < n.size(); i++) {
     double val;
@@ -33,10 +37,13 @@ Neuron::Neuron(std::vector<Neuron*> n) {
 }
 
 Neuron::Neuron(std::string jsonString, vector<Neuron*> l) {
+  valeur = 0;
+  d_valeur = 0;
+  erreur = 0;
+  
   json j = json::parse(jsonString);
   string n = "Neuron0";
   for (int i = 0; i < l.size();i) {
-    cout << j["inputs"][n] << endl;
     poids.push_back(j["inputs"][n]);
     inputs.push_back(l[i]);
     n.pop_back();
@@ -94,7 +101,7 @@ void Neuron::updateErreur() {
 }
 
 void Neuron::updatePoids() {
-  double learning_rate = 0.5;
+  double learning_rate = 0.01;
   for (int i = 0; i < inputs.size(); i++) {
     poids[i] += learning_rate*erreur*d_valeur*inputs[i]->getValue();
   }
@@ -114,4 +121,8 @@ std::string Neuron::getJson() {
      json += "{\"f_activation\" : \"sigmoide\", \"inputs\" : {}}";
   }
   return json;
+}
+
+std::vector<double> Neuron::getPoids() {
+  return poids;
 }

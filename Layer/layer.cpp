@@ -25,16 +25,18 @@ Layer::Layer(int i) {
 }
 
 Layer::Layer(std::string jsonString, Layer * c) {
+  /*
+  std::cout << "Création de la couche" << std::endl;
+  std::cout << jsonString << std::endl;
+  std::cout << std::endl;
+  */
   json j = json::parse(jsonString);
   std::string n = "Neuron0";
-  for (int i = 0; i < c->getNeurons().size();i) {
-    std::cout << j[n] << std::endl;
+  for (int i = 0; i < j.size();i) {
     neurones.push_back(new Neuron(j[n].dump(), c->getNeurons()));
     n.pop_back();
     n += std::to_string(++i);
   }
-  if (jsonString == getJson())
-    cout << "Les deux couches sont égales" << endl;
 }
 
 void Layer::ajouterNeuron(Neuron * n) {

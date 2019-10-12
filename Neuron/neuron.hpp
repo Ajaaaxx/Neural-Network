@@ -23,6 +23,7 @@ public:
   double getErreur();
   void updateErreur(); //Met à jour les erreurs des neurones précédents en fonction de "erreur"
   void updatePoids(); //Met à jour les poids en fonction des erreurs
+  std::vector<double> getPoids();
   std::string getJson(); //Permet d'obtenir le json du neurone
 };
 
