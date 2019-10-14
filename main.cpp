@@ -10,13 +10,9 @@ int main() {
   
   Network * reseau = new Network();
   reseau->add(3);
-  reseau->add(10);
-  reseau->add(10);
-  reseau->add(10);
-  reseau->add(10);
+  reseau->add(10000);
   reseau->add(1);
-  
-  for (int i = 0; i < 100000; i++) {
+  for (int i = 0; i < 10000; i++) {
     double a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
     if (c == 1) {
       result = 0.5;
@@ -27,7 +23,7 @@ int main() {
     in.push_back(c);
     out.push_back(result);
     reseau->train(in,out);
-    if (i%1000 == 0) {
+    if (i%10 == 0) {
       std::cout << "Entrainement n°" << i << std::endl;
     }
   }
@@ -42,7 +38,7 @@ int main() {
     in.push_back(b);
     in.push_back(c);
     out.push_back(result);
-    somme += reseau->train(in,out);
+    somme += reseau->test(in,out);
   }
   cout << "Erreur = " << somme/1000 << endl;
   reseau->save("test.json");
@@ -54,7 +50,7 @@ int main() {
   test->load("test.json");
 
   somme = 0;
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 1000; i++) {
     double a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
     if (c == 1) {
       result = 0.5;
@@ -64,10 +60,10 @@ int main() {
     in.push_back(b);
     in.push_back(c);
     out.push_back(result);
-    somme += test->train(in,out);
+    somme += test->test(in,out);
   }
 
-  cout << "Nouvelle Erreur = " << somme/10 << endl;
+  cout << "Nouvelle Erreur = " << somme/1000 << endl;
   
   return 0;
 }

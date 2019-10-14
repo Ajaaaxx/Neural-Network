@@ -20,6 +20,7 @@ public:
   void setResult(std::vector<double> d); //Permet de mettre les sorties attendues
   void resetErreur();
   double train(std::vector<double> i, std::vector<double> o); //i : inputs, o : outputs attendus, retourne la valeur de l'erreur
+  double test(std::vector<double> i, std::vector<double> o);
   void afficheTout(); //Affiche tous les coefs de toutes les couches
   void afficheToutErreur();
 };

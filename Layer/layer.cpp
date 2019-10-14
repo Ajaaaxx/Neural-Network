@@ -1,6 +1,8 @@
 #include "layer.hpp"
 #include "../json.hpp"
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 using json = nlohmann::json;
@@ -25,17 +27,25 @@ Layer::Layer(int i) {
 }
 
 Layer::Layer(std::string jsonString, Layer * c) {
-  /*
-  std::cout << "Création de la couche" << std::endl;
-  std::cout << jsonString << std::endl;
-  std::cout << std::endl;
-  */
   json j = json::parse(jsonString);
-  std::string n = "Neuron0";
+  std::string n;
+  int size = 1;
+  stringstream s;
+  while (pow(10,size) < j.size()) {
+    size++;
+  }
+  
+  n = "Neuron";
+  s.str("");s.clear();
+  s << setw(size) << setfill('0') << "0";
+  n += s.str();
+  
   for (int i = 0; i < j.size();i) {
-    neurones.push_back(new Neuron(j[n].dump(), c->getNeurons()));
-    n.pop_back();
-    n += std::to_string(++i);
+    neurones.push_back(new Neuron(j[n].dump(), c->getNeurons())); //Erreur
+    n = "Neuron";
+    s.str("");s.clear();
+    s << setw(size) << setfill('0') << to_string(++i);
+    n += s.str();
   }
 }
 
@@ -85,8 +95,15 @@ void Layer::updatePoids() {
 
 std::string Layer::getJson() {
   std::string json = "{";
+  int size = 1;
+  while (pow(10,size) < neurones.size()) {
+    size++;
+  }
+  stringstream s;
   for (int i = 0; i < neurones.size(); i++) {
-    json += "\"Neuron" + std::to_string(i) + "\" : "; 
+    s.str("");s.clear();
+    s << setw(size) << setfill('0') << std::to_string(i);
+    json += "\"Neuron" + s.str() + "\" : "; 
     json += neurones[i]->getJson();
     json += ",";
   }

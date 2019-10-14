@@ -1,7 +1,9 @@
 #include "neuron.hpp"
 #include "../json.hpp"
 #include <math.h>
+#include <sstream>
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 using json = nlohmann::json;
@@ -36,18 +38,31 @@ Neuron::Neuron(std::vector<Neuron*> n) {
   }
 }
 
-Neuron::Neuron(std::string jsonString, vector<Neuron*> l) {
+Neuron::Neuron(std::string jsonString, vector<Neuron*> l) { //BUG 0
   valeur = 0;
   d_valeur = 0;
   erreur = 0;
   
   json j = json::parse(jsonString);
-  string n = "Neuron0";
+  string n;
+  int size = 1;
+  stringstream s;
+  while (pow(10,size) < l.size()) {
+    size++;
+  }
+
+  n = "Neuron";
+  s.str("");s.clear();
+  s << setw(size) << setfill('0') << "0";
+  n += s.str();
+  
   for (int i = 0; i < l.size();i) {
     poids.push_back(j["inputs"][n]);
     inputs.push_back(l[i]);
-    n.pop_back();
-    n += to_string(++i);
+    n = "Neuron";
+    s.str("");s.clear();
+    s << setw(size) << setfill('0') << to_string(++i);
+    n += s.str();
   }
 }
 
@@ -107,13 +122,20 @@ void Neuron::updatePoids() {
   }
 }
 
-std::string Neuron::getJson() {
+std::string Neuron::getJson() { //BUG 0
   std::string json = "";
   //On initialise le json avec l'adresse et la fonction d'activation
   if (!inputs.empty()) {
     json += "{\"f_activation\" : \"sigmoide\", \"inputs\" : {";
+    int size = 1;
+    while (pow(10,size) < inputs.size()) {
+      size++;
+    }
+    stringstream s;
     for (int i = 0; i < inputs.size(); i++) {
-      json += "\"Neuron" + std::to_string(i) + "\" : " +  std::to_string(poids[i]) + ",";
+      s.str("");s.clear();
+      s << setw(size) << setfill('0') << std::to_string(i);
+      json += "\"Neuron" + s.str() + "\" : " +  std::to_string(poids[i]) + ",";
     }
     json.pop_back(); //Pour enlever la , en trop
     json += "}}";

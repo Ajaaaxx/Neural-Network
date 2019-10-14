@@ -3,6 +3,7 @@
 #include "../json.hpp"
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 
 using namespace std;
 using json = nlohmann::json;
@@ -19,17 +20,30 @@ void Network::load(std::string file) {
   jsonString = buffer.str();
   
   json j = json::parse(jsonString);
+  //std::cout << jsonString  << std::endl;
+  std::string n;
 
-  std::string n = "Layer0";
+  int size = 1;
+  stringstream s;
+  while (pow(10,size) < j.size()) {
+    size++;
+  }
+  
+  n = "Layer";
+  s.str("");s.clear();
+  s << setw(size) << setfill('0') << "0";
+  n += s.str();
+  
   for (int i = 0; i < j.size();i) {
     if (i == 0) {
       layers.push_back(new Layer(j[n].size()));
     } else {
-      //std::cout << j[n] << std::endl;
       layers.push_back(new Layer(j[n].dump(), layers.back()));
     }
-    n.pop_back();
-    n += std::to_string(++i);
+    n = "Layer";
+    s.str("");s.clear();
+    s << setw(size) << setfill('0') << to_string(++i);
+    n += s.str();;
   }
 }
 
@@ -67,9 +81,15 @@ void Network::add(int n) {
 
 std::string Network::getJson() {
   std::string json = "{";
-
+  stringstream s;
+  int size = 1;
+  while (pow(10,size) < layers.size()) {
+    size++;
+  }
   for (int i = 0; i < layers.size(); i++) {
-    json += "\"Layer" + std::to_string(i) + "\" : ";
+    s.str("");s.clear();
+    s << setw(size) << setfill('0') << std::to_string(i);
+    json += "\"Layer" + s.str() + "\" : ";
     json += layers[i]->getJson();
     json += ",";
   }
@@ -99,7 +119,7 @@ void Network::resetErreur() {
 }
 
 double Network::train(vector<double> in, vector<double> out) {
-  double somme = 0;
+  //double somme = 0;
   setInputs(in);
   for (int i = 1; i < layers.size(); i++) {
     layers[i]->eval();
@@ -108,6 +128,28 @@ double Network::train(vector<double> in, vector<double> out) {
   for (int i = layers.size()-1; i > 0; i--) {
     layers[i]->updateErreur();
     layers[i]->updatePoids();
+  }
+  //std::cout << "Résultat attendu : " << out[0] << endl << "Résultat obtenu : " << layers.back()->getNeurons()[0]->getValue() << endl << endl;
+  /*
+  for (int i = 0; i < layers.back()->getNeurons().size(); i++) {
+    somme += layers.back()->getNeurons()[i]->getErreur();
+  }
+  */
+  resetErreur();
+  //return (somme/layers.back()->getNeurons().size());
+  return 0;
+}
+
+double Network::test(vector<double> in, vector<double> out) {
+  double somme = 0;
+  setInputs(in);
+  for (int i = 1; i < layers.size(); i++) {
+    layers[i]->eval();
+  }
+  setResult(out);
+  for (int i = layers.size()-1; i > 0; i--) {
+    layers[i]->updateErreur();
+    //layers[i]->updatePoids();
   }
   //std::cout << "Résultat attendu : " << out[0] << endl << "Résultat obtenu : " << layers.back()->getNeurons()[0]->getValue() << endl << endl;
   for (int i = 0; i < layers.back()->getNeurons().size(); i++) {
