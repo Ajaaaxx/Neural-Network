@@ -93,6 +93,14 @@ void Layer::updatePoids() {
   }
 }
 
+std::vector<std::vector<double>> Layer::getDeltaPoids() {
+  std::vector<std::vector<double>> dPoids;
+  for (int i = 0; i < neurones.size(); i++) {
+    dPoids.push_back(neurones[i]->getDeltaPoids());
+  }
+  return dPoids;
+}
+
 std::string Layer::getJson() {
   std::string json = "{";
   int size = 1;

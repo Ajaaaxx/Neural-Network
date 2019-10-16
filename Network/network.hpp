@@ -19,7 +19,9 @@ public:
   void setInputs(std::vector<double> d); //Permet de mettre les entrées
   void setResult(std::vector<double> d); //Permet de mettre les sorties attendues
   void resetErreur();
-  double train(std::vector<double> i, std::vector<double> o); //i : inputs, o : outputs attendus, retourne la valeur de l'erreur
+  void train(std::vector<double> i, std::vector<double> o); //i : inputs, o : outputs attendus, retourne la valeur de l'erreur
+  std::vector<std::vector<std::vector<double>>> getDeltaTrain(std::vector<double> i, std::vector<double> o); //Permet d'obtenir le delta des poids (faire la somme de tout ça pour un batch)
+  void train(std::vector<std::vector<std::vector<std::vector<double>>>> deltaTrains); //Fait la somme de tous les deltaTrain et met à jour le poids
   double test(std::vector<double> i, std::vector<double> o);
   void afficheTout(); //Affiche tous les coefs de toutes les couches
   void afficheToutErreur();

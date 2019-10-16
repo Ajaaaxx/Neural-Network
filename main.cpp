@@ -7,26 +7,33 @@ using namespace std;
 
 int main() {
   srand (time(NULL));
-  
+  vector<vector<vector<vector<double>>>> trains;
   Network * reseau = new Network();
   reseau->add(3);
-  reseau->add(10000);
+  reseau->add(10);
+  reseau->add(10);
   reseau->add(1);
-  for (int i = 0; i < 10000; i++) {
-    double a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
-    if (c == 1) {
-      result = 0.5;
-    }
-    vector<double> in,out;
-    in.push_back(a);
-    in.push_back(b);
-    in.push_back(c);
-    out.push_back(result);
-    reseau->train(in,out);
-    if (i%10 == 0) {
+  
+  for (int i = 0; i < 5000; i++) {
+    if (i%100 == 0)
       std::cout << "Entrainement n°" << i << std::endl;
+    for (int j = 0; j < 32; j++) {
+      double a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
+      if (c == 1) {
+	result = 0.5;
+      }
+      vector<double> in,out;
+      in.push_back(a);
+      in.push_back(b);
+      in.push_back(c);
+      out.push_back(result);
+      //reseau2->train(in,out);
+      trains.push_back(reseau->getDeltaTrain(in,out));
     }
+    reseau->train(trains);
+    trains.clear();
   }
+  
   double somme = 0;
   for (int i = 0; i < 1000; i++) {
     double a = rand()%2,b = rand()%2, c = rand()%2, result = 1;
@@ -40,7 +47,9 @@ int main() {
     out.push_back(result);
     somme += reseau->test(in,out);
   }
-  cout << "Erreur = " << somme/1000 << endl;
+  cout << "Erreur(batch) = " << somme/1000 << endl;
+  
+  /*
   reseau->save("test.json");
   
   
@@ -64,6 +73,6 @@ int main() {
   }
 
   cout << "Nouvelle Erreur = " << somme/1000 << endl;
-  
+  */
   return 0;
 }

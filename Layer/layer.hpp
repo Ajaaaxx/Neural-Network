@@ -22,6 +22,7 @@ public:
   void resetErreur();
   void updateErreur();
   void updatePoids();
+  std::vector<std::vector<double>> getDeltaPoids();
   std::string getJson();
 };
 

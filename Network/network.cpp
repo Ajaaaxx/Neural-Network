@@ -118,8 +118,7 @@ void Network::resetErreur() {
   }
 }
 
-double Network::train(vector<double> in, vector<double> out) {
-  //double somme = 0;
+void Network::train(vector<double> in, vector<double> out) {
   setInputs(in);
   for (int i = 1; i < layers.size(); i++) {
     layers[i]->eval();
@@ -129,15 +128,36 @@ double Network::train(vector<double> in, vector<double> out) {
     layers[i]->updateErreur();
     layers[i]->updatePoids();
   }
-  //std::cout << "Résultat attendu : " << out[0] << endl << "Résultat obtenu : " << layers.back()->getNeurons()[0]->getValue() << endl << endl;
-  /*
-  for (int i = 0; i < layers.back()->getNeurons().size(); i++) {
-    somme += layers.back()->getNeurons()[i]->getErreur();
-  }
-  */
   resetErreur();
-  //return (somme/layers.back()->getNeurons().size());
-  return 0;
+}
+
+void Network::train(std::vector<std::vector<std::vector<std::vector<double>>>> deltaTrains) {
+  for (int i = 0; i < deltaTrains.size(); i++) { //Pour chaque deltaTrain
+    for (int j = 0; j < deltaTrains[i].size(); j++) { //Pour chaque couche du deltaTrain
+      for (int k = 0; k < deltaTrains[i][j].size(); k++) { //Pour chaque neurone de chaque couche
+	for (int l = 0; l < deltaTrains[i][j][k].size(); l++) { //Pour chaque poids du neurone
+	  layers[j]->getNeurons()[k]->setPoids(l,layers[j]->getNeurons()[k]->getPoids(l) + deltaTrains[i][j][k][l]);
+	}
+      }
+    }
+  }
+}
+
+std::vector<std::vector<std::vector<double>>> Network::getDeltaTrain(std::vector<double> i, std::vector<double> o) {//Permet d'obtenir le delta des poids (faire la somme de tout ça pour un batch)
+  setInputs(i);
+  for (int i = 1; i < layers.size(); i++) {
+    layers[i]->eval();
+  }
+  setResult(o);
+  for (int i = layers.size()-1; i > 0; i--) {
+    layers[i]->updateErreur();
+  }
+  std::vector<std::vector<std::vector<double>>> dPoids;
+  for (int i = 0; i < layers.size(); i++) {
+    dPoids.push_back(layers[i]->getDeltaPoids());
+  }
+  resetErreur();
+  return dPoids;
 }
 
 double Network::test(vector<double> in, vector<double> out) {
